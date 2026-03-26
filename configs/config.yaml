@@ -1,0 +1,128 @@
+# Churn Prediction Model Configuration
+
+# Data Configuration
+data:
+  raw_path: "data/raw"
+  processed_path: "data/processed"
+  external_path: "data/external"
+  synthetic_size: 10000
+  test_size: 0.2
+  validation_size: 0.2
+  random_seed: 42
+
+# Feature Engineering
+features:
+  categorical_features:
+    - "Contract"
+    - "InternetService"
+    - "PaymentMethod"
+    - "gender"
+    - "Partner"
+    - "Dependents"
+    - "PhoneService"
+    - "MultipleLines"
+    - "OnlineSecurity"
+    - "OnlineBackup"
+    - "DeviceProtection"
+    - "TechSupport"
+    - "StreamingTV"
+    - "StreamingMovies"
+    - "PaperlessBilling"
+  
+  numerical_features:
+    - "tenure"
+    - "MonthlyCharges"
+    - "TotalCharges"
+    - "SeniorCitizen"
+  
+  target_column: "Churn"
+  
+  # Feature engineering options
+  create_interactions: true
+  polynomial_features: true
+  polynomial_degree: 2
+
+# Model Configuration
+models:
+  # Baseline models
+  logistic_regression:
+    random_state: 42
+    max_iter: 1000
+    class_weight: "balanced"
+  
+  random_forest:
+    n_estimators: 100
+    random_state: 42
+    class_weight: "balanced"
+    max_depth: 10
+  
+  # Advanced models
+  xgboost:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    random_state: 42
+    scale_pos_weight: 1
+  
+  lightgbm:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    random_state: 42
+    class_weight: "balanced"
+
+# Hyperparameter Optimization
+optimization:
+  n_trials: 50
+  timeout: 300  # seconds
+  direction: "maximize"
+  metric: "roc_auc"
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1"
+    - "roc_auc"
+    - "pr_auc"
+    - "brier_score"
+    - "log_loss"
+  
+  # Business metrics
+  business_metrics:
+    churn_cost: 100  # Cost of losing a customer
+    retention_cost: 20  # Cost of retention campaign
+    false_positive_cost: 5  # Cost of unnecessary retention effort
+  
+  # Threshold optimization
+  threshold_optimization: true
+  threshold_metric: "f1"
+
+# Explainability
+explainability:
+  shap_enabled: true
+  permutation_importance: true
+  feature_importance_top_k: 20
+  
+# Visualization
+visualization:
+  plot_style: "seaborn-v0_8"
+  figure_size: [10, 6]
+  dpi: 300
+  save_plots: true
+  plots_path: "assets/plots"
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/churn_prediction.log"
+
+# Reproducibility
+reproducibility:
+  numpy_seed: 42
+  random_seed: 42
+  torch_seed: 42
+  deterministic: true
